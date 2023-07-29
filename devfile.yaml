@@ -13,12 +13,3 @@ components:
   - name: venv
     volume:
       size: 1G
-commands:
-  - id: run
-    exec:
-      label: "Run the application"
-      component: python
-      workingDir: ${PROJECTS_ROOT}/bkoz-sample-project
-      commandLine: python -m venv .venv && . .venv/bin/activate && python hello-world.py
-      group:
-        kind: run
