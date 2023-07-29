@@ -19,6 +19,6 @@ commands:
       label: "Run the application"
       component: python
       workingDir: ${PROJECTS_ROOT}/devspace-test
-      commandLine: python -m venv .venv && . .venv/bin/activate && python hello-world.py
+      commandLine: python -m venv .venv && . .venv/bin/activate
       group:
         kind: run
