@@ -2,7 +2,7 @@ schemaVersion: 2.1.0
 metadata:
   name: devspace-test
 components:
-  - name: tools
+  - name: runtime
     container:
       image: quay.io/devfile/base-developer-image:ubi8-latest
       volumeMounts:
