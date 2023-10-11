@@ -2,16 +2,26 @@ schemaVersion: 2.1.0
 metadata:
   name: devspace-test
 components:
-  - name: python
+  - name: tools
     container:
-      # image: quay.io/devfile/base-developer-image:ubi9-latest
-      image: quay.io/bkozdemb/udi-9
+      image: quay.io/devfile/base-developer-image:ubi8-latest
       volumeMounts:
         - name: venv
           path: /home/user/.venv
       memoryLimit: 2G
       mountSources: true
+  - name: python
+    container:
+      image: quay.io/devfile/base-developer-image:ubi9-latest
+      volumeMounts:
+        - name: venv-python
+          path: /home/user/.venv-python
+      memoryLimit: 2G
+      mountSources: true
   - name: venv
+    volume:
+      size: 1G
+  - name: venv-python
     volume:
       size: 1G
 commands:
