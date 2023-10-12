@@ -4,7 +4,7 @@ metadata:
 components:
   - name: runtime
     container:
-      image: quay.io/devfile/base-developer-image:ubi8-latest
+      image: quay.io/bkozdemb/base-developer-image:ubi9-latest
       volumeMounts:
         - name: venv
           path: /home/user/.venv
@@ -12,7 +12,7 @@ components:
       mountSources: true
   - name: python
     container:
-      image: quay.io/devfile/base-developer-image:ubi9-latest
+      image: quay.io/bkozdemb/base-developer-image:ubi9-latest
       volumeMounts:
         - name: venv-python
           path: /home/user/.venv-python
