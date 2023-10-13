@@ -2,7 +2,7 @@ schemaVersion: 2.1.0
 metadata:
   name: devspace-test
 components:
-  - name: runtime
+  - name: python
     container:
       image: quay.io/bkozdemb/base-developer-image:ubi9-latest
       volumeMounts:
