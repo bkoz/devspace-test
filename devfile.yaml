@@ -5,7 +5,8 @@ components:
   - name: python
     container:
       # image: registry.redhat.io/devspaces/udi-rhel8:3.8
-      image: image-registry.openshift-image-registry.svc:5000/uditest/ubi9:udi9-latest
+      # image: image-registry.openshift-image-registry.svc:5000/uditest/ubi9:udi9-latest
+      image: quay.io/bkozdemb/udi-9
       volumeMounts:
         - name: venv
           path: /home/user/.venv
