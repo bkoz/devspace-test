@@ -11,7 +11,6 @@ projects:
 components:
   - name: python
     container:
-      # image: registry.redhat.io/devspaces/udi-rhel8:3.8
       image: quay.io/bkozdemb/udi-9
       volumeMounts:
         - name: venv
