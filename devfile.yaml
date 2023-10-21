@@ -22,7 +22,7 @@ commands:
     exec:
       label: "Create a python virtual environment"
       component: python
-      workingDir: ${PROJECTS_ROOT}
-      commandLine: "python3 -m venv .venv && source .venv/bin/activate && pip install pip -Uq && pip install -r src/requirements.txt"
+      workingDir: ${PROJECTS_ROOT}/devspace-test
+      commandLine: "python3 -m venv .venv && source .venv/bin/activate && pip install pip -Uq && pip install -r requirements.txt"
       group:
         kind: run
