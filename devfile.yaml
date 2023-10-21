@@ -1,11 +1,10 @@
 schemaVersion: 2.1.0
 metadata:
-  name: python-hello-world
+  name: devspace-test
 components:
   - name: python
     container:
       # image: registry.redhat.io/devspaces/udi-rhel8:3.8
-      # image: image-registry.openshift-image-registry.svc:5000/uditest/ubi9:udi9-latest
       image: quay.io/bkozdemb/udi-9
       volumeMounts:
         - name: venv
@@ -21,9 +20,9 @@ components:
 commands:
   - id: run
     exec:
-      label: "Run the application"
+      label: "Create a python virtual environment"
       component: python
-      workingDir: ${PROJECTS_ROOT}/python-hello-world
-      commandLine: python -m venv .venv && . .venv/bin/activate && python hello-world.py
+      workingDir: ${PROJECTS_ROOT}
+      commandLine: "python3 -m venv .venv && source .venv/bin/activate && pip install pip -Uq && pip install -r src/requirements.txt"
       group:
         kind: run
