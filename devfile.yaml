@@ -1,6 +1,13 @@
 schemaVersion: 2.1.0
 metadata:
   name: devspace-test
+projects:
+  - name: devspace-test
+    git:
+      remotes:
+        origin: "https://github.com/bkoz/devspace-test.git"
+      checkoutFrom:
+        revision: main
 components:
   - name: python
     container:
