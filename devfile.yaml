@@ -89,11 +89,10 @@ commands:
         name: Continue Config
         version: 0.0.1
         models:
-          - name: LiteMaaS (qwen3-14b)
-            provider: vllm
-            model: qwen3-14b
-            apiKey: ${LLM_API_KEY}
-            apiBase: ${LLM_BASE_URL}
+          - name: Google Gemini
+            provider: gemini
+            model: gemini-2.5-flash
+            apiKey: ${{ secrets.GOOGLE_API_KEY }}
             roles:
               - chat
         EOF
