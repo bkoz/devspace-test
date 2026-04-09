@@ -1,34 +1,105 @@
-schemaVersion: 2.1.0
+schemaVersion: 2.2.0
 metadata:
-  name: devspace-test
-projects:
-  - name: devspace-test
-    git:
-      remotes:
-        origin: "https://github.com/bkoz/devspace-test.git"
-      checkoutFrom:
-        revision: main
+  name: default-devfile
 components:
-  - name: python
+  - name: development-tooling
     container:
-      image: quay.io/bkozdemb/udi-9
+      image: registry.redhat.io/devspaces/udi-rhel9:3.26.1
+      env:
+        - name: QUARKUS_HTTP_HOST
+          value: 0.0.0.0
+        - name: MAVEN_OPTS
+          value: "-Dmaven.repo.local=/home/user/.m2/repository"
+        - name: DOCKER_HOST
+          value: unix:///tmp/podman.sock
+        - name: TESTCONTAINERS_RYUK_DISABLED
+          value: "true"
+        # Workaround: the DevWorkspace operator should inject HOST_USERS=false
+        # when hostUsers: false is set in the operator config, but doesn't.
+        # The UDI entrypoint uses this to fix /etc/subuid for nested containers.
+        - name: HOST_USERS
+          value: "false"
+        - name: QUARKUS_ANALYTICS_DISABLED
+          value: "true"
+      memoryLimit: 5Gi
+      cpuLimit: 2500m
       volumeMounts:
-        - name: venv
-          path: /home/user/.venv
-      memoryLimit: '2Gi'
-      memoryRequest: '512Mi'
-      cpuLimit: '2'
-      cpuRequest: '512m'
-      mountSources: true
-  - name: venv
+        - name: m2
+          path: /home/user/.m2
+      endpoints:
+        - name: quarkus-dev
+          targetPort: 8080
+          exposure: public
+          secure: false
+          protocol: https
+        - name: debug
+          targetPort: 5005
+          exposure: none
+          secure: false
+          protocol: tcp
+        - name: tests
+          targetPort: 8081
+          exposure: none
+          secure: false
+          protocol: tcp
+  - name: m2
     volume:
       size: 1G
 commands:
-  - id: run
+  - id: package
     exec:
-      label: "Create a python virtual environment"
-      component: python
-      workingDir: ${PROJECTS_ROOT}/devspace-test
-      commandLine: "python3 -m venv .venv && source .venv/bin/activate && pip install pip -Uq && pip install -r requirements.txt"
+      label: "1. Package the application"
+      component: development-tooling
+      commandLine: "./mvnw package"
+      group:
+        kind: build
+        isDefault: true
+  - id: start-dev
+    exec:
+      label: "2. Start Development mode (Hot reload + debug)"
+      component: development-tooling
+      commandLine: "./mvnw compile quarkus:dev -Dquarkus.analytics.disabled=true"
       group:
         kind: run
+        isDefault: true
+  - id: init-podman-socket
+    exec:
+      label: "Start podman socket"
+      component: development-tooling
+      commandLine: |
+        # Use podman.orig directly because the UDI entrypoint symlinks podman
+        # to /home/tooling/.local/bin/, which isn't on PATH during postStart.
+        /usr/bin/podman.orig system service --time=0 unix:///tmp/podman.sock &
+        sleep 2
+        if [ -S /tmp/podman.sock ]; then
+          echo "Podman socket ready"
+        else
+          echo "WARNING: Podman socket not created"
+        fi
+      group:
+        kind: build
+  - id: init-continue
+    exec:
+      label: "Initialize Continue config"
+      component: development-tooling
+      workingDir: /home/user
+      commandLine: |
+        mkdir -p /home/user/.continue
+        cat > /home/user/.continue/config.yaml << EOF
+        name: Continue Config
+        version: 0.0.1
+        models:
+          - name: LiteMaaS (qwen3-14b)
+            provider: vllm
+            model: qwen3-14b
+            apiKey: ${LLM_API_KEY}
+            apiBase: ${LLM_BASE_URL}
+            roles:
+              - chat
+        EOF
+      group:
+        kind: build
+events:
+  postStart:
+    - init-podman-socket
+    - init-continue
