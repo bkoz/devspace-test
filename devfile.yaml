@@ -92,7 +92,7 @@ commands:
           - name: Google Gemini
             provider: gemini
             model: gemini-2.5-flash
-            apiKey: ${{ secrets.GOOGLE_API_KEY }}
+            apiKey: my_api_key
             roles:
               - chat
         EOF
