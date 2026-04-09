@@ -92,9 +92,12 @@ commands:
           - name: Google Gemini
             provider: gemini
             model: gemini-2.5-flash
-            apiKey: my_api_key
+            apiKey: ${GOOGLE_API_KEY}
             roles:
               - chat
+              - autocomplete
+              - apply
+              - edit
         EOF
       group:
         kind: build
